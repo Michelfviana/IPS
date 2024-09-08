@@ -1,64 +1,70 @@
 # SPI
 
-Descrição curta do que o projeto faz e seu propósito.
+A Python-based software for image processing using a graphical interface built with Tkinter. This application allows users to load images, convert them to grayscale, apply filters, and adjust brightness and contrast. It uses OpenCV for image manipulation and PIL (Pillow) for displaying images. The main features include:
 
-## Requisitos
+Loading images from the filesystem and displaying them.
+Converting images to grayscale.
+Applying filters, such as Gaussian Blur, to images.
+Adjusting brightness and contrast using interactive sliders in a separate window.
+The user interface includes buttons for each function, a canvas to display the original and processed images, and a label to show basic information about the images.
 
-Certifique-se de ter o Python 3.x instalado. Você pode verificar sua versão do Python com o comando:
+## Requirements
+
+Make sure you have Python 3.x installed. You can check your Python version with the command:
 
 ```bash
 python --version
 ```
 
-## Clonando o Repositório
+## Cloning the Repository
 
-Clone este repositório usando o comando `git`:
+Clone this repository using the `git` command:
 
 ```bash
-git clone https://github.com/usuario/nome-do-repositorio.git
+git clone https://github.com/user/repository-name.git
 ```
 
-Substitua `https://github.com/usuario/nome-do-repositorio.git` pela URL do seu repositório.
+Replace `https://github.com/user/repository-name.git` with the URL of your repository.
 
-## Configuração do Ambiente
+## Environment Setup
 
-1. Navegue até o diretório do projeto:
+1. Navigate to the project directory:
 
-    ```bash
-    cd nome-do-repositorio
-    ```
+   ```bash
+   cd repository-name
+   ```
 
-2. Crie um ambiente virtual para isolar as dependências do projeto:
+2. Create a virtual environment to isolate the project dependencies:
 
-    ```bash
-    python -m venv venv
-    ```
+   ```bash
+   python -m venv venv
+   ```
 
-3. Ative o ambiente virtual:
+3. Activate the virtual environment:
 
-    - **Windows:**
+   - **Windows:**
 
-      ```bash
-      venv\Scripts\activate
-      ```
+     ```bash
+     venv\Scripts\activate
+     ```
 
-    - **Linux/macOS:**
+   - **Linux/macOS:**
 
-      ```bash
-      source venv/bin/activate
-      ```
+     ```bash
+     source venv/bin/activate
+     ```
 
-4. Instale as dependências do projeto listadas no arquivo `requirements.txt`:
+4. Install the project dependencies listed in the `requirements.txt` file:
 
-    ```bash
-    pip install -r requirements.txt
-    ```
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-## Rodando o Projeto
+## Running the Project
 
-Com o ambiente virtual ativado e as dependências instaladas, você pode rodar o projeto. Dependendo do tipo de projeto, o comando para rodá-lo pode variar.
+With the virtual environment activated and the dependencies installed, you can run the project. Depending on the type of project, the command to run it may vary.
 
-- **Para um script Python:**
+- **For a Python script:**
 
   ```bash
   python main.py
