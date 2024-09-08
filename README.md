@@ -21,10 +21,10 @@ python --version
 Clone this repository using the `git` command:
 
 ```bash
-git clone https://github.com/user/repository-name.git
+git clone https://github.com/Michelfviana/SPI.git
 ```
 
-Replace `https://github.com/user/repository-name.git` with the URL of your repository.
+Replace `https://github.com/Michelfviana/SPI.git` with the URL of your repository.
 
 ## Environment Setup
 
