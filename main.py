@@ -9,68 +9,45 @@ from tkinter import (
     Scale,
     HORIZONTAL,
     NW,
+    Entry,
 )
 import cv2
 from PIL import Image, ImageTk
-
+import numpy as np
+import matplotlib.pyplot as plt
 
 class ImageProcessorApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Image Processing Software")
-        self.root.configure(
-            bg="lightgray"
-        )  # Set the background color of the main window
+        self.root.title("Image Processor")
+        self.root.configure(bg="lightgray")
 
-        # Variables to store the original and processed images
-        self.original_image = None
-        self.processed_image = None
+        # Create a frame for the buttons
+        button_frame = Frame(self.root, bg="lightgray")
+        button_frame.pack(side="left", fill="y")
 
-        # Frame to organize the buttons
-        button_frame = Frame(root, bg="lightgray")
-        button_frame.grid(row=0, column=0, columnspan=2, pady=10)
+        # Add buttons for each functionality
+        Button(button_frame, text="Load Image", command=self.load_image).pack(pady=5)
+        Button(button_frame, text="Convert to Grayscale", command=self.convert_to_grayscale).pack(pady=5)
+        Button(button_frame, text="Apply Filter", command=self.apply_filter).pack(pady=5)
+        Button(button_frame, text="Adjust Contrast", command=self.adjust_contrast).pack(pady=5)
+        Button(button_frame, text="Morphological Operations", command=self.morphological_operations).pack(pady=5)
+        Button(button_frame, text="Segment and Find Contours", command=self.segment_and_find_contours).pack(pady=5)
+        Button(button_frame, text="Apply Custom Filter", command=self.apply_custom_filter).pack(pady=5)
+        Button(button_frame, text="Display Histogram", command=self.display_histogram).pack(pady=5)
 
-        # Button to load the image
-        self.load_button = Button(
-            button_frame, text="Load Image", command=self.load_image, bg="white"
-        )
-        self.load_button.grid(row=0, column=0, padx=5)
-
-        # Button to convert to grayscale
-        self.grayscale_button = Button(
-            button_frame,
-            text="Convert to Grayscale",
-            command=self.convert_to_grayscale,
-            bg="white",
-        )
-        self.grayscale_button.grid(row=0, column=1, padx=5)
-
-        # Button to apply filter
-        self.filter_button = Button(
-            button_frame, text="Apply Filter", command=self.apply_filter, bg="white"
-        )
-        self.filter_button.grid(row=0, column=2, padx=5)
-
-        # Button to adjust brightness/contrast
-        self.contrast_button = Button(
-            button_frame,
-            text="Adjust Brightness/Contrast",
-            command=self.adjust_contrast,
-            bg="white",
-        )
-        self.contrast_button.grid(row=0, column=3, padx=5)
-
-        # Area to display the loaded image
-        self.original_canvas = Canvas(root, width=300, height=400, bg="white")
-        self.original_canvas.grid(row=1, column=0, padx=10, pady=10)
-
-        # Area to display the processed image
-        self.processed_canvas = Canvas(root, width=300, height=400, bg="white")
-        self.processed_canvas.grid(row=1, column=1, padx=10, pady=10)
+        # Create canvases for displaying images
+        self.original_canvas = Canvas(self.root, width=400, height=400, bg="white")
+        self.original_canvas.pack(side="left", padx=10, pady=10)
+        self.processed_canvas = Canvas(self.root, width=400, height=400, bg="white")
+        self.processed_canvas.pack(side="left", padx=10, pady=10)
 
         # Label to display image information
-        self.info_label = Label(root, text="", bg="lightgray")
-        self.info_label.grid(row=2, column=0, columnspan=2, pady=10)
+        self.info_label = Label(self.root, text="", bg="lightgray")
+        self.info_label.pack(pady=5)
+
+        self.original_image = None
+        self.processed_image = None
 
     def load_image(self):
         """Load an image from the file system and resize it."""
@@ -166,8 +143,108 @@ class ImageProcessorApp:
         resized_image = cv2.resize(image, dim, interpolation=cv2.INTER_AREA)
         return resized_image
 
+    def apply_morphological_operation(self, operation, kernel_size):
+        """Apply morphological operations like erosion, dilation, etc."""
+        if self.original_image is not None:
+            kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (kernel_size, kernel_size))
+            if operation == 'erosion':
+                processed_image = cv2.erode(self.original_image, kernel)
+            elif operation == 'dilation':
+                processed_image = cv2.dilate(self.original_image, kernel)
+            elif operation == 'opening':
+                processed_image = cv2.morphologyEx(self.original_image, cv2.MORPH_OPEN, kernel)
+            elif operation == 'closing':
+                processed_image = cv2.morphologyEx(self.original_image, cv2.MORPH_CLOSE, kernel)
+            elif operation == 'gradient':
+                processed_image = cv2.morphologyEx(self.original_image, cv2.MORPH_GRADIENT, kernel)
+            self.display_image(processed_image, self.processed_canvas)
+
+    def morphological_operations(self):
+        """Open a new window to apply morphological operations."""
+        if self.original_image is not None:
+            window = Toplevel(self.root)
+            window.title("Morphological Operations")
+            window.configure(bg="lightgray")
+
+            def apply_operation(operation):
+                kernel_size = int(kernel_size_slider.get())
+                self.apply_morphological_operation(operation, kernel_size)
+
+            kernel_size_slider = Scale(window, from_=1, to=10, orient=HORIZONTAL, label="Kernel Size", bg="lightgray")
+            kernel_size_slider.set(3)
+            kernel_size_slider.pack(pady=5)
+
+            Button(window, text="Erosion", command=lambda: apply_operation('erosion')).pack(pady=5)
+            Button(window, text="Dilation", command=lambda: apply_operation('dilation')).pack(pady=5)
+            Button(window, text="Opening", command=lambda: apply_operation('opening')).pack(pady=5)
+            Button(window, text="Closing", command=lambda: apply_operation('closing')).pack(pady=5)
+            Button(window, text="Gradient", command=lambda: apply_operation('gradient')).pack(pady=5)
+
+    def segment_and_find_contours(self):
+        """Segment the image and find contours."""
+        if self.original_image is not None:
+            window = Toplevel(self.root)
+            window.title("Segment and Find Contours")
+            window.configure(bg="lightgray")
+
+            def apply_segmentation():
+                threshold_value = int(threshold_slider.get())
+                self.segment_and_find_contours(threshold_value)
+
+            threshold_slider = Scale(window, from_=0, to=255, orient=HORIZONTAL, label="Threshold", bg="lightgray")
+            threshold_slider.set(128)
+            threshold_slider.pack(pady=5)
+
+            Button(window, text="Apply", command=apply_segmentation).pack(pady=5)
+
+    def apply_custom_filter(self):
+        """Open a new window to apply a custom filter."""
+        if self.original_image is not None:
+            window = Toplevel(self.root)
+            window.title("Custom Filter")
+            window.configure(bg="lightgray")
+
+            def apply_filter():
+                kernel = [
+                    [int(entry_00.get()), int(entry_01.get()), int(entry_02.get())],
+                    [int(entry_10.get()), int(entry_11.get()), int(entry_12.get())],
+                    [int(entry_20.get()), int(entry_21.get()), int(entry_22.get())]
+                ]
+                self.apply_custom_filter(kernel)
+
+            entries = []
+            for i in range(3):
+                row = []
+                for j in range(3):
+                    entry = Entry(window, width=5)
+                    entry.grid(row=i, column=j, padx=5, pady=5)
+                    row.append(entry)
+                entries.append(row)
+
+            entry_00, entry_01, entry_02 = entries[0]
+            entry_10, entry_11, entry_12 = entries[1]
+            entry_20, entry_21, entry_22 = entries[2]
+
+            Button(window, text="Apply Filter", command=apply_filter).grid(row=3, columnspan=3, pady=10)
+
+    def display_histogram(self):
+        """Display the histogram of the image."""
+        if self.processed_image is not None:
+            for i, color in enumerate(['b', 'g', 'r']):
+                histogram = cv2.calcHist([self.processed_image], [i], None, [256], [0, 256])
+                plt.plot(histogram, color=color)
+                plt.xlim([0, 256])
+            plt.show()
+
+    def equalize_histogram(self):
+        """Equalize the histogram of the image."""
+        if self.processed_image is not None:
+            gray_image = cv2.cvtColor(self.processed_image, cv2.COLOR_BGR2GRAY)
+            equalized_image = cv2.equalizeHist(gray_image)
+            self.display_image(cv2.cvtColor(equalized_image, cv2.COLOR_GRAY2BGR), self.processed_canvas)
 
 if __name__ == "__main__":
     root = Tk()
     app = ImageProcessorApp(root)
     root.mainloop()
+    
