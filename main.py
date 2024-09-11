@@ -41,7 +41,7 @@ class ImageProcessorApp:
 
     def load_image(self):
         """Load an image from the file system."""
-        file_path = tk.filedialog.askopenfilename(
+        file_path = filedialog.askopenfilename(
             filetypes=[("Image Files", "*.jpg *.jpeg *.png *.bmp *.tiff")]
         )
         if file_path:
