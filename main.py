@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog
-import cv2
-from PIL import Image, ImageTk
+import cv2 
+from PIL import ImageTk , Image
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -21,7 +21,7 @@ class ImageProcessorApp:
         tk.Button(button_frame, text="Apply Filter", command=self.apply_filter).pack(pady=5)
         tk.Button(button_frame, text="Adjust Contrast", command=self.adjust_contrast).pack(pady=5)
         tk.Button(button_frame, text="Morphological Operations", command=self.morphological_operations).pack(pady=5)
-        tk.Button(button_frame, text="Segment and Find Contours", command=self.segment_and_find_contours).pack(pady=5)
+        tk.Button(button_frame, text="Segment and Find Contours", command=self.segment_and_find_contours).pack(pady=5,padx=15)
         tk.Button(button_frame, text="Apply Custom Filter", command=self.apply_custom_filter).pack(pady=5)
         tk.Button(button_frame, text="Display Histogram", command=self.display_histogram).pack(pady=5)
 
@@ -40,14 +40,15 @@ class ImageProcessorApp:
 
     def load_image(self):
         """Load an image from the file system and resize it."""
-        file_path = filedialog.askopenfilename(
+        file_path = tk.filedialog.askopenfilename(
             filetypes=[("Image files", "*.jpg *.jpeg *.png *.bmp *.tiff")]
         )
         if file_path:
             self.original_image = cv2.imread(file_path)
             self.original_image = self.resize_image(
+                # Resize the image to 30%
                 self.original_image, 0.3
-            )  # Resize the image to 30%
+            )  
             self.display_image(self.original_image, self.original_canvas)
             self.display_image_info(self.original_image)
 
