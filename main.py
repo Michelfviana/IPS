@@ -5,6 +5,7 @@ from PIL import ImageTk, Image
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 class ImageProcessorApp:
     def __init__(self, root):
         self.root = root
