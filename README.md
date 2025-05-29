@@ -1,4 +1,4 @@
-# SPI
+# Image processing Software
 
 ![Project Image](src/Screenshot%20from%202024-09-20%2015-26-27.png)
 
